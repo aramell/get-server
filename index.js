@@ -16,6 +16,7 @@ const options = {
 };
 
 function sendRequest() {
+  console.log("running:", new Date());
   https
     .request(options, (res) => {
       let data = "";
@@ -71,9 +72,6 @@ function sendEmail(body) {
   });
 }
 
-setInterval(() => {
-  console.log("running", new Date());
-  return sendRequest();
-}, 5000);
+setInterval(() => sendRequest(), 5000);
 
 export default setInterval;
