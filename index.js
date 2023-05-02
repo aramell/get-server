@@ -73,4 +73,6 @@ function sendEmail(body) {
   });
 }
 
-export default setInterval(sendRequest, 5000);
+const emailInterval = setInterval(() => sendRequest, 5000);
+
+export default emailInterval;
