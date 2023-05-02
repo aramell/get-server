@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import dotenvco from "dotenv";
 dotenvco.config();
 
-const locationId = 16277;
+const locationId = 8120;
 
 // https://ttp.cbp.dhs.gov/schedulerapi/slot-availability?locationId=8120
 const options = {
@@ -39,7 +39,7 @@ function sendRequest() {
         if (jsonData.availableSlots.length > 0) {
           sendEmail(emailBody);
         } else {
-          console.log("no appointments:", new Date());
+          sendEmail("no appointments available");
         }
       });
     })
@@ -73,6 +73,6 @@ function sendEmail(body) {
   });
 }
 
-const emailInterval = () => setInterval(() => sendRequest(), 5000);
+const emailInterval = () => setInterval(() => sendRequest(), 90000);
 
 export default emailInterval;
