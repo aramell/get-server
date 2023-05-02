@@ -18,7 +18,7 @@ const options = {
 function sendRequest() {
   console.log("running", new Date());
 
-  https
+  return https
     .request(options, (res) => {
       let data = "";
 
