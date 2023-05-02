@@ -75,4 +75,4 @@ function sendEmail(body) {
 
 const emailInterval = () => setInterval(sendRequest, 90000);
 
-export default emailInterval;
+export default emailInterval();
