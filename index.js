@@ -1,6 +1,8 @@
-const https = require("https");
-const nodemailer = require("nodemailer");
-require("dotenv").config();
+import https from "https";
+import nodemailer from "nodemailer";
+import dotenvco from "dotenv";
+dotenvco.config();
+
 const locationId = 16277;
 
 // https://ttp.cbp.dhs.gov/schedulerapi/slot-availability?locationId=8120
@@ -70,10 +72,9 @@ function sendEmail(body) {
   });
 }
 
-// setInterval(() => {
-//   sendRequest();
-// }, 5000);
-
-module.exports = setInterval(() => {
+setInterval(() => {
+  console.log("running", new Date());
   sendRequest();
 }, 5000);
+
+export default setInterval;
