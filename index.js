@@ -59,7 +59,7 @@ function sendEmail(body) {
 
   const mailOptions = {
     from: "andrew.ramell@gmail.com",
-    to: "andrew.ramell@gmail.com ",
+    to: "andrew.ramell@gmail.com",
     subject: "Global Entry Data",
     text: body,
   };
@@ -73,4 +73,6 @@ function sendEmail(body) {
   });
 }
 
-setInterval(sendRequest, 5000);
+setInterval(sendRequest, 60000);
+
+export default sendRequest;
