@@ -30,13 +30,13 @@ function sendRequest() {
 
       res.on("end", () => {
         const jsonData = JSON.parse(data);
-        const appointmentData = jsonData.availableSlots[0].startTimestamp;
 
-        const emailBody = `Global Entry Appointment available at: ${appointmentData}  
-        
-        - rawData:${JSON.stringify(jsonData)} 
-       Book appointment here:  https://ttp.cbp.dhs.gov/schedulerui/schedule-interview/location?lang=en&vo=true&returnUrl=ttp-external&service=UP`;
         if (jsonData.availableSlots.length > 0) {
+          const appointmentData = jsonData.availableSlots[0].startTimestamp;
+          const emailBody = `Global Entry Appointment available at: ${appointmentData}  
+            
+            - rawData:${JSON.stringify(jsonData)} 
+            Book appointment here:  https://ttp.cbp.dhs.gov/schedulerui/schedule-interview/location?lang=en&vo=true&returnUrl=ttp-external&service=UP`;
           sendEmail(emailBody);
         } else {
           sendEmail("no appointments available");
@@ -73,6 +73,4 @@ function sendEmail(body) {
   });
 }
 
-const emailInterval = () => setInterval(sendRequest, 90000);
-
-export default emailInterval();
+setInterval(sendRequest, 5000);
