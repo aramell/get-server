@@ -73,6 +73,4 @@ function sendEmail(body) {
   });
 }
 
-setInterval(sendRequest, 5000);
-
-export default setInterval;
+export default setInterval(sendRequest, 5000);
