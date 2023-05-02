@@ -15,7 +15,6 @@ const options = {
   },
 };
 
-// Create a function to send the HTTPS request
 function sendRequest() {
   https
     .request(options, (res) => {
@@ -72,7 +71,7 @@ function sendEmail(body) {
   });
 }
 
-setInterval(() => {
+setInterval(function () {
   console.log("running", new Date());
   sendRequest();
 }, 5000);
