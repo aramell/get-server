@@ -70,6 +70,10 @@ function sendEmail(body) {
   });
 }
 
-setInterval(() => {
+// setInterval(() => {
+//   sendRequest();
+// }, 5000);
+
+module.exports = setInterval(() => {
   sendRequest();
 }, 5000);
