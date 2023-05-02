@@ -44,6 +44,7 @@ function sendRequest() {
       });
     })
     .end();
+  return true;
 }
 
 // Create a function to send the email
