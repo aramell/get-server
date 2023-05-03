@@ -9,6 +9,17 @@ require("dotenv").config();
 
 const app = express();
 const locationId = 8120;
+app.get("/api", (req, res) => {
+  const path = `/api/item/${v4()}`;
+  res.setHeader("Content-Type", "text/html");
+  res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
+  res.end(`Hello! Go to item: <a href="${path}">${path}</a>`);
+});
+
+app.get("/api/item/:slug", (req, res) => {
+  const { slug } = req.params;
+  res.end(`Item: ${slug}`);
+});
 
 // https://ttp.cbp.dhs.gov/schedulerapi/slot-availability?locationId=8120
 app.get("/send-email", async (req, res) => {
@@ -67,16 +78,4 @@ app.get("/send-email", async (req, res) => {
   }
 });
 
-cron.schedule("*/1 * * * *", async () => {
-  try {
-    // Call the rout
-    const response = await axios.get("http://localhost:3000/send-email");
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-app.listen(3000, () => {
-  console.log("Server listening on port 3000");
-});
+app.listen();
