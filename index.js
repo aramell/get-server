@@ -1,78 +1,55 @@
-import https from "https";
-import nodemailer from "nodemailer";
-import dotenvco from "dotenv";
-dotenvco.config();
+const cron = require("node-cron");
 
+const express = require("express");
+const axios = require("axios");
+const nodemailer = require("nodemailer");
+
+const app = express();
 const locationId = 8120;
 
 // https://ttp.cbp.dhs.gov/schedulerapi/slot-availability?locationId=8120
-const options = {
-  hostname: "ttp.cbp.dhs.gov",
-  path: `/schedulerapi/slot-availability?locationId=${locationId}`,
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-  },
-};
+app.get("/send-email", async (req, res) => {
+  try {
+    // Make the HTTP request
+    const response = await axios.get(
+      `ttp.cbp.dhs.gov/schedulerapi/slot-availability?locationId=${locationId}`
+    );
 
-function sendRequest() {
-  console.log("running:", new Date());
-  https
-    .request(options, (res) => {
-      let data = "";
+    // Send the email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: PROCESS.ENV.EMAIL_ADDRESS,
+        pass: PROCESS.ENV.EMAIL_PASSWORD,
+      },
+    });
 
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
-      res.on("error", (err) => {
-        console.log(err);
-      });
+    const mailOptions = {
+      from: "aramell7788@gmail.com",
+      to: "andrew.ramell@gmail.com",
+      subject: "Appointments",
+      text: `HTTP request response: ${response.data}`,
+    };
 
-      res.on("end", () => {
-        const jsonData = JSON.parse(data);
+    await transporter.sendMail(mailOptions);
 
-        if (jsonData.availableSlots.length > 0) {
-          const appointmentData = jsonData.availableSlots[0].startTimestamp;
-          const emailBody = `Global Entry Appointment available at: ${appointmentData}  
-            
-            - rawData:${JSON.stringify(jsonData)} 
-            Book appointment here:  https://ttp.cbp.dhs.gov/schedulerui/schedule-interview/location?lang=en&vo=true&returnUrl=ttp-external&service=UP`;
-          sendEmail(emailBody);
-        } else {
-          sendEmail("no appointments available");
-        }
-      });
-    })
-    .end();
-  return true;
-}
+    res.send("Email sent successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error sending email");
+  }
+});
 
-// Create a function to send the email
-function sendEmail(body) {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_ADDRESS,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
+app.listen(3000, () => {
+  console.log("Server listening on port 3000");
+});
 
-  const mailOptions = {
-    from: "andrew.ramell@gmail.com",
-    to: "andrew.ramell@gmail.com",
-    subject: "Global Entry Data",
-    text: body,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
-}
-
-setInterval(sendRequest, 300000);
-
-export default sendEmail;
+cron.schedule("*/1 * * * *", async () => {
+  try {
+    // Call the route
+    const response = await axios.get("http://localhost:3000/send-email");
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+});
