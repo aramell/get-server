@@ -4,6 +4,8 @@ const express = require("express");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 
+require("dotenv").config();
+
 const app = express();
 const locationId = 8120;
 
@@ -12,28 +14,38 @@ app.get("/send-email", async (req, res) => {
   try {
     // Make the HTTP request
     const response = await axios.get(
-      `ttp.cbp.dhs.gov/schedulerapi/slot-availability?locationId=${locationId}`
+      `https://ttp.cbp.dhs.gov/schedulerapi/slot-availability?locationId=${locationId}`
     );
 
+    console.log(response.data);
     // Send the email
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: PROCESS.ENV.EMAIL_ADDRESS,
-        pass: PROCESS.ENV.EMAIL_PASSWORD,
-      },
-    });
 
-    const mailOptions = {
-      from: "aramell7788@gmail.com",
-      to: "andrew.ramell@gmail.com",
-      subject: "Appointments",
-      text: `HTTP request response: ${response.data}`,
-    };
+    if (response.data.availableSlots.length > 0) {
+      console.log("Slots available");
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_ADDRESS,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
 
-    await transporter.sendMail(mailOptions);
+      const mailOptions = {
+        from: "aramell7788@gmail.com",
+        to: "andrew.ramell@gmail.com",
+        subject: "Global Entry appointment available!",
+        text: `Next available appointment: ${response.data.availableSlots[0].startTimestamp} rawData: ${response.data.availableSlots}
+        
+        sign up here: https://ttp.cbp.dhs.gov/schedulerui/schedule-interview/location?lang=en&vo=true&returnUrl=ttp-external&service=UP
+        `,
+      };
 
-    res.send("Email sent successfully");
+      await transporter.sendMail(mailOptions);
+
+      res.send("Email sent successfully");
+    } else {
+      console.log("No slots available");
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send("Error sending email");
