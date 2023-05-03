@@ -4,6 +4,7 @@ const express = require("express");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 const { getLogger } = require("nodemailer/lib/shared");
+const PORT = process.env.PORT || 3001;
 
 require("dotenv").config();
 
@@ -22,6 +23,9 @@ app.get("/api/item/:slug", (req, res) => {
 });
 
 // https://ttp.cbp.dhs.gov/schedulerapi/slot-availability?locationId=8120
+
+app.get("/", (req, res) => res.send("Main page"));
+
 app.get("/send-email", async (req, res) => {
   try {
     // Make the HTTP request
@@ -78,4 +82,4 @@ app.get("/send-email", async (req, res) => {
   }
 });
 
-app.listen();
+app.listen(PORT);
