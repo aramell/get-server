@@ -1,11 +1,5 @@
 {
   "version": 2,
   "name": "global-entry-checker",
-  "builds": [{ "src": "index.js", "use": "@vercel/node" }],
-  "crons": [
-    {
-      "path": "/api/cron",
-      "schedule": "*/1 * * * *"
-    }
-  ]
+  "builds": [{ "src": "index.js", "use": "@vercel/node" }]
 }

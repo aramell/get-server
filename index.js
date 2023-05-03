@@ -67,6 +67,16 @@ app.get("/send-email", async (req, res) => {
   }
 });
 
+cron.schedule("*/1 * * * *", async () => {
+  try {
+    // Call the rout
+    const response = await axios.get("http://localhost:3000/send-email");
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 app.get("/", function (req, res) {
   res.render("index", {});
 });
