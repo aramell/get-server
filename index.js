@@ -67,6 +67,10 @@ app.get("/send-email", async (req, res) => {
   }
 });
 
+app.get("/", function (req, res) {
+  res.render("index", {});
+});
+
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
 });
