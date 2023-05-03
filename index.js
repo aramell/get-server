@@ -3,6 +3,7 @@ const cron = require("node-cron");
 const express = require("express");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
+const { getLogger } = require("nodemailer/lib/shared");
 
 require("dotenv").config();
 
@@ -45,6 +46,20 @@ app.get("/send-email", async (req, res) => {
       res.send("Email sent successfully");
     } else {
       console.log("No slots available");
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_ADDRESS,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+
+      const mailOptions = {
+        from: "aramell7788@gmail.com",
+        to: "andrew.ramell@gmail.com",
+        subject: "Global Entry not available",
+      };
+      await transporter.sendMail(mailOptions);
     }
   } catch (error) {
     console.error(error);
@@ -58,7 +73,7 @@ app.listen(3000, () => {
 
 cron.schedule("*/1 * * * *", async () => {
   try {
-    // Call the route
+    // Call the rout
     const response = await axios.get("http://localhost:3000/send-email");
     console.log(response.data);
   } catch (error) {
