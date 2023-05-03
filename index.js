@@ -77,10 +77,6 @@ cron.schedule("*/1 * * * *", async () => {
   }
 });
 
-app.get("/", function (req, res) {
-  res.render("index", {});
-});
-
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
 });
